@@ -23,10 +23,10 @@ There is no test runner configured yet.
 React 19 + Vite 7, plain JavaScript (JSX, no TypeScript), no router, no state library, no backend or persistence: data lives in memory and resets on reload.
 
 - `src/main.jsx` mounts `<App />` in `StrictMode`.
-- `src/App.jsx` owns the `transactions` state (seeded with sample data) and the hard-coded `categories` array, and composes three child components. It passes `addTransaction` down as the only way to change the list.
+- `src/App.jsx` owns the `transactions` state (seeded with sample data) and the hard-coded `categories` array, and composes three child components. It passes `addTransaction` and `deleteTransaction` down as the only ways to change the list.
   - `src/Summary.jsx`: receives `transactions` and computes income, expense and balance totals on every render.
   - `src/AddTransaction.jsx`: owns the form field state; on submit it builds a transaction and calls `onAdd`, then resets the form.
-  - `src/TransactionList.jsx`: owns the type/category filter state and renders the filtered table.
+  - `src/TransactionList.jsx`: owns the type/category filter state and renders the filtered table, with a delete button per row that asks for confirmation (`window.confirm`) before calling `onDelete(id)`.
 - Styling is global CSS: `src/index.css` (base) and `src/App.css` (component classes such as `.summary-card`, `.income-amount`, `.expense-amount`), imported once in `App.jsx`.
 
 Transaction shape: `{ id, description, amount, type: "income" | "expense", category, date: "YYYY-MM-DD" }`. `amount` must be a **number**: the form input yields a string, so `AddTransaction`'s `handleSubmit` converts it with `parseFloat` before storing. The totals are computed with `reduce` and would concatenate strings instead of adding them.
