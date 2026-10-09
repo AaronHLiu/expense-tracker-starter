@@ -23,9 +23,12 @@ There is no test runner configured yet.
 React 19 + Vite 7, plain JavaScript (JSX, no TypeScript), no router, no state library, no backend or persistence: data lives in memory and resets on reload.
 
 - `src/main.jsx` mounts `<App />` in `StrictMode`.
-- `src/App.jsx` holds the entire app in one component: seed transactions, add-transaction form state, type/category filters, and derived totals (income, expenses, balance) computed on every render. Categories are a hard-coded array in the same file.
-- Styling is global CSS: `src/index.css` (base) and `src/App.css` (component classes such as `.summary-card`, `.income-amount`, `.expense-amount`).
+- `src/App.jsx` owns the `transactions` state (seeded with sample data) and the hard-coded `categories` array, and composes three child components. It passes `addTransaction` down as the only way to change the list.
+  - `src/Summary.jsx`: receives `transactions` and computes income, expense and balance totals on every render.
+  - `src/AddTransaction.jsx`: owns the form field state; on submit it builds a transaction and calls `onAdd`, then resets the form.
+  - `src/TransactionList.jsx`: owns the type/category filter state and renders the filtered table.
+- Styling is global CSS: `src/index.css` (base) and `src/App.css` (component classes such as `.summary-card`, `.income-amount`, `.expense-amount`), imported once in `App.jsx`.
 
-Transaction shape: `{ id, description, amount, type: "income" | "expense", category, date: "YYYY-MM-DD" }`. `amount` must be a **number**: the form input yields a string, so `handleSubmit` converts it with `parseFloat` before storing. The totals are computed with `reduce` and would concatenate strings instead of adding them.
+Transaction shape: `{ id, description, amount, type: "income" | "expense", category, date: "YYYY-MM-DD" }`. `amount` must be a **number**: the form input yields a string, so `AddTransaction`'s `handleSubmit` converts it with `parseFloat` before storing. The totals are computed with `reduce` and would concatenate strings instead of adding them.
 
 ESLint uses the flat config (`eslint.config.js`) with the React Hooks and React Refresh rules; `no-unused-vars` ignores names starting with an uppercase letter or underscore.
